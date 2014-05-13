@@ -11,6 +11,7 @@ Superslides = function(el, options) {
     pagination: true,
     hashchange: false,
     scrollable: true,
+	loop: true,
     elements: {
       preserve: '.preserve',
       nav: '.slides-navigation',

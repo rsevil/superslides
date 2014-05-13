@@ -54,9 +54,12 @@ Superslides.prototype = {
   },
 
   _nextInDom: function() {
-    var index = this.current + 1;
-
-    if (index === this.size()) {
+	var index = this.current + 1;
+  
+	if (!this.options.loop 
+		&& index === this.size()){
+		return this.current;
+	} else if (index === this.size()) {
       index = 0;
     }
 
@@ -64,9 +67,12 @@ Superslides.prototype = {
   },
 
   _prevInDom: function() {
-    var index = this.current - 1;
-
-    if (index < 0) {
+	var index = this.current - 1;
+  
+	if (!this.options.loop
+		&& index < 0){
+		return this.current;
+	}else if(index < 0) {
       index = this.size() - 1;
     }
 
@@ -145,12 +151,21 @@ Superslides.prototype = {
     if (direction === undefined) {
       direction = 'next';
     }
+	
+	if (!that.options.loop 
+		&& (((/next/).test(direction) && this.current == this.size()-1)
+			|| ((/prev/).test(direction) && this.current == 0)
+			)
+		) {
+		this.animating = false;
+		return;
+    }
 
     orientation.upcoming_slide = this._upcomingSlide(direction);
-
-    if (orientation.upcoming_slide >= this.size()) {
-      return;
-    }
+	
+	if (orientation.upcoming_slide >= this.size()){
+		return;
+	}
 
     orientation.outgoing_slide    = this.current;
     orientation.upcoming_position = this.width * 2;
@@ -164,6 +179,19 @@ Superslides.prototype = {
     if (that.size() > 1) {
       that.pagination._setCurrent(orientation.upcoming_slide);
     }
+	
+	if (!that.options.loop){	
+		var nav = that.$el.find(that.options.elements.nav).removeClass('last-slide');
+		var btns = nav.find('a').removeAttr('disabled');
+		if (orientation.upcoming_slide == this.size()-1){
+			btns.filter('.next')
+				.attr('disabled', true);
+			nav.addClass('last-slide');
+		}else if (orientation.upcoming_slide == 0){
+			btns.filter('.prev')
+				.attr('disabled', true);
+		}
+	}
 
     if (that.options.hashchange) {
       var hash = orientation.upcoming_slide + 1,

@@ -180,7 +180,7 @@
     addSlide(2);
 
     $slides.on('init.slides', function() {
-      equal($slides.data('superslides').prev, 2);
+      equal($slides.data('superslides').prev, $slides.data('superslides').options.loop? 2 : 0);
       start();
     });
 
@@ -211,10 +211,10 @@
 
     $slides.on('updated.slides', function() {
       var s = $slides.data('superslides');
-
+		
       equal(s.current, 0, 'current should be 0 after update');
       equal(s.next, 1, 'next should be 1 after update');
-      equal(s.prev, 2, 'prev should be 2 after update');
+      equal(s.prev, s.options.loop? 2 : 0, 'prev should be 2 after update');
     });
 
     $slides.on('init.slides', function() {
