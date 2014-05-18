@@ -3,9 +3,6 @@ var Superslides, plugin = 'superslides';
 Superslides = function(el, options) {
   this.options = $.extend({
     play: false,
-    animation_speed: 600,
-    animation_easing: 'swing',
-    animation: 'slide',
     inherit_width_from: window,
     inherit_height_from: window,
     pagination: true,

@@ -26,7 +26,6 @@ module.exports = function(grunt) {
               'src/core.js',
               'src/setup.js',
               'src/css.js',
-              'src/fx.js',
               'src/image.js',
               'src/pagination.js',
               'src/core_outro.js',

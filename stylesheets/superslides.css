@@ -1,6 +1,12 @@
 #slides {
   position: relative;
 }
+
+#slides .slides-container.animate {
+	-webkit-transition: all ease;
+	-webkit-transition-duration:0.3s;
+}
+
 #slides .slides-container {
   display: none;
 }

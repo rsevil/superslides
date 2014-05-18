@@ -6,12 +6,11 @@ var css = {
       });
 
       that.$control.css({
-        width: that.width * multiplier,
-        left: -that.width
+        width: that.width
       });
-
-      that.$container.css({
-
+	  
+	  that.$container.css({
+		width: that.width * that.size()
       });
     } else {
       $('body').css({
@@ -19,18 +18,14 @@ var css = {
       });
 
       that.$el.css({
-        position: 'relative',
         overflow: 'hidden',
         width: '100%',
         height: that.height
       });
 
       that.$control.css({
-        position: 'relative',
-        transform: 'translate3d(0)',
         height: '100%',
-        width: that.width * multiplier,
-        left: -that.width
+        width: that.width
       });
 
       that.$container.css({
@@ -39,7 +34,8 @@ var css = {
         padding: '0',
         listStyle: 'none',
         position: 'relative',
-        height: '100%'
+        height: '100%',
+		width: that.width * that.size()
       });
     }
 
@@ -55,7 +51,7 @@ var css = {
       .css({
         "-webkit-backface-visibility": 'hidden',
         "-ms-interpolation-mode": 'bicubic',
-        "position": 'absolute',
+        "position": 'relative',
         "left": '0',
         "top": '0',
         "z-index": '-1',
@@ -99,20 +95,12 @@ var css = {
       $children = that.$container.children();
     }
 
-    if (!that.init) {
-      $children.css({
-        display: 'none',
-        left: that.width * 2
-      });
-    }
-
     $children.css({
-      position: 'absolute',
       overflow: 'hidden',
       height: '100%',
       width: that.width,
-      top: 0,
-      zIndex: 0
+      zIndex: 0,
+	  float:'left'
     });
 
   }

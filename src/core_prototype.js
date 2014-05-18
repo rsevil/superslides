@@ -10,11 +10,7 @@ Superslides.prototype = {
     return this.size() === 1 ? 1 : 3;
   },
 
-  _upcomingSlide: function(direction, from_hash_change) {
-    if (from_hash_change && !isNaN(direction)) {
-      direction = direction - 1;
-    }
-
+  _upcomingSlide: function(direction) {
     if ((/next/).test(direction)) {
       return this._nextInDom();
 
@@ -87,7 +83,7 @@ Superslides.prototype = {
       hash = +hash;
     }
 
-    return hash;
+    return hash-1;
   },
 
   size: function() {
@@ -119,11 +115,7 @@ Superslides.prototype = {
   start: function() {
     var that = this;
 
-    if (that.options.hashchange) {
-      $(window).trigger('hashchange');
-    } else {
-      this.animate();
-    }
+	this.animate();
 
     if (this.options.play) {
       if (this.play_id) {
@@ -162,23 +154,11 @@ Superslides.prototype = {
     }
 
     orientation.upcoming_slide = this._upcomingSlide(direction);
+	orientation.outgoing_slide    = this.current;
 	
 	if (orientation.upcoming_slide >= this.size()){
 		return;
 	}
-
-    orientation.outgoing_slide    = this.current;
-    orientation.upcoming_position = this.width * 2;
-    orientation.offset            = -orientation.upcoming_position;
-
-    if (direction === 'prev' || direction < orientation.outgoing_slide) {
-      orientation.upcoming_position = 0;
-      orientation.offset            = 0;
-    }
-
-    if (that.size() > 1) {
-      that.pagination._setCurrent(orientation.upcoming_slide);
-    }
 	
 	if (!that.options.loop){	
 		var nav = that.$el.find(that.options.elements.nav).removeClass('last-slide');
@@ -193,34 +173,60 @@ Superslides.prototype = {
 		}
 	}
 
-    if (that.options.hashchange) {
-      var hash = orientation.upcoming_slide + 1,
-          id = that.$container.children(':eq(' + orientation.upcoming_slide + ')').attr('id');
-
-      if (id) {
-        window.location.hash = id;
-      } else {
-        window.location.hash = hash;
-      }
-    }
-
     that.$el.trigger('animating.slides', [orientation]);
+	
+	that.showPane(orientation,true,function(){
+		if (that.size() > 1) {
+		  that.pagination._setCurrent(orientation.upcoming_slide);
+		}
+	
+		//set current, next && prev
+		that._findPositions(orientation.upcoming_slide, that);
 
-    that.animation(orientation, function() {
-      that._findPositions(orientation.upcoming_slide, that);
+		if (typeof userCallback === 'function') {
+			userCallback();
+		}
 
-      if (typeof userCallback === 'function') {
-        userCallback();
-      }
+		that.animating = false;
+		that.$el.trigger('animated.slides');
 
-      that.animating = false;
-      that.$el.trigger('animated.slides');
+		if (!that.init) {
+			that.$el.trigger('init.slides');
+			that.init = true;
+			that.$container.fadeIn('fast');
+		}
+	});
+  },
+  
+  showPane: function(orientation, animate, callback) {
+	var offset = -((100/this.size())*orientation.upcoming_slide);
+	this.setContainerOffset(offset, animate, callback);
+  },
+  
+  setContainerOffset: function(percent, animate, callback) {
+	this.$container.removeClass("animate");
 
-      if (!that.init) {
-        that.$el.trigger('init.slides');
-        that.init = true;
-        that.$container.fadeIn('fast');
-      }
-    });
+	if(animate) {
+		this.$container.addClass("animate");
+	}
+	
+	if (window.Modernizr && window.Modernizr.csstransitions){
+		if(window.Modernizr.csstransforms3d) {
+			this.$container.css("transform", "translate3d("+ percent +"%,0,0) scale3d(1,1,1)");
+		}
+		else if(window.Modernizr.csstransforms) {
+			this.$container.css("transform", "translate("+ percent +"%,0)");
+		}
+		else {
+			var px = ((this._findWidth()*this.size()) / 100) * percent;
+			this.$container.css("left", px+"px");
+		}
+	}else{
+		this.$container.removeClass("animate");
+		var px = ((this._findWidth()*this.size()) / 100) * percent;
+		this.$container.animate({"left": px+"px"});
+	}
+	if (callback)
+		callback();
   }
 };

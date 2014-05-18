@@ -1,8 +1,6 @@
   this.css = css;
   this.image = image;
   this.pagination = pagination;
-  this.fx = fx;
-  this.animation = this.fx[this.options.animation];
 
   this.$control = this.$container.wrap($control).parent('.slides-control');
   if (!this.options.loop)
