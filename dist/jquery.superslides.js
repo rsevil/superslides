@@ -1,4 +1,4 @@
-/*! Superslides - v0.6.3-wip - 2014-05-18
+/*! Superslides - v0.6.3-wip - 2014-05-25
 * https://github.com/nicinabox/superslides
 * Copyright (c) 2014 Nic Aitch; Licensed MIT */
 (function(window, $) {
@@ -452,7 +452,10 @@ Superslides.prototype = {
       hash = +hash;
     }
 
-    return hash-1;
+	if (typeof(hash) === 'number')
+		hash-=1;
+	
+    return hash;
   },
 
   size: function() {

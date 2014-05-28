@@ -83,7 +83,10 @@ Superslides.prototype = {
       hash = +hash;
     }
 
-    return hash-1;
+	if (typeof(hash) === 'number')
+		hash-=1;
+	
+    return hash;
   },
 
   size: function() {
